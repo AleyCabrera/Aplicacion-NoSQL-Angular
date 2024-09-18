@@ -3,13 +3,15 @@ version: '3.8'
 services:
   mongodb:
     container_name: serve-mongodb
-    image: mongo:4.4  # Usamos la imagen oficial de MongoDB
+    build: 
+      context: .
+      dockerfile: Dockerfile  # Utiliza el Dockerfile anterior
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - "${MONGO_PORT}:27017"  # Mapeo correcto del puerto
+      - "27017:27017"  # Exposición del puerto
     volumes:
       - mongodb_data:/data/db
       - "/home/ubuntu/db_backups:/backups/mongodb"
