@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mongodb:
+    container_name: serve-mongodb
+    image: mongo:4.4  # Usamos la imagen oficial de MongoDB
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "${MONGO_PORT}:27017"  # Mapeo correcto del puerto
+    volumes:
+      - mongodb_data:/data/db
+      - "/home/ubuntu/db_backups:/backups/mongodb"
+    networks:
+      - network_local_server
+    command: ["mongod", "--bind_ip_all"]  # MongoDB escucha en todas las interfaces
+    healthcheck:
+      test: ["CMD-SHELL", "mongo --eval 'db.runCommand({ ping: 1 })'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    labels:
+      - com.corhuila.group=databases
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  network_local_server:
+    external: true
