@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  backend-ubication:
+    image: ${CONTAINER_IMAGE}
+    container_name: backend-ubication
+    build: 
+      context: ../
+    ports:  
+    - "9090:9000"
+    networks:
+    - network_local_server
+networks:
+  network_local_server:
+    external: true
