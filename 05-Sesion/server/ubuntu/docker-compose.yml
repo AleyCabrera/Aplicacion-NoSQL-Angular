@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  linux:
+    container_name: serve-ubuntu
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+      - "2222:22"
+    networks:
+      - network_local_server
+    volumes:
+      - linux_data:/var/lib/data
+      - "/home/ubuntu:/root"
+    env_file:
+      - .env  # Usar el archivo .env para las variables de entorno
+    healthcheck:
+      test: ["CMD-SHELL", "ping -c 1 google.com || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    labels:
+      - com.corhuila.group=linux-environment
+volumes:
+  linux_data:
+    driver: local
+networks:
+  network_local_server:
+    driver: bridge
+    name: network_local_server
